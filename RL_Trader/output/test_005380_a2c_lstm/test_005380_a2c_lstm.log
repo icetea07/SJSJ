@@ -1,0 +1,4 @@
+{"mode": "test", "ver": "v3", "name": "005380", "stock_code": ["005380"], "rl_method": "a2c", "net": "lstm", "backend": "pytorch", "start_date": "20200101", "end_date": "20211231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}
+[005380] RL:a2c NET:lstm LR:0.001 DF:0.7 
+[005380][Epoch 1/1] Epsilon:0.0000 #Expl.:0/492 #Buy:0 #Sell:0 #Hold:492 #Stocks:0 PV:100,000,000 Loss:0.000000 ET:0.3170
+[005380] Elapsed Time:1.2035 Max PV:100,000,000 #Win:0

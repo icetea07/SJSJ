@@ -1,0 +1,1 @@
+{"mode": "update", "ver": "v3", "name": "035720", "stock_code": ["035720"], "rl_method": "a2c", "net": "lstm", "backend": "pytorch", "start_date": "20200101", "end_date": "20211231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}

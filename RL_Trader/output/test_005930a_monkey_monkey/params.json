@@ -1,0 +1,1 @@
+{"mode": "test", "ver": "v3", "name": "005930a", "stock_code": ["005930"], "rl_method": "monkey", "net": "monkey", "backend": "pytorch", "start_date": "20180101", "end_date": "20191231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}

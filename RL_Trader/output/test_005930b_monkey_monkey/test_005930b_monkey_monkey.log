@@ -1,0 +1,13 @@
+{"mode": "test", "ver": "v3", "name": "005930b", "stock_code": ["005930"], "rl_method": "monkey", "net": "monkey", "backend": "pytorch", "start_date": "20200101", "end_date": "20211231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}
+[005930] RL:monkey NET:monkey LR:0.001 DF:0.7 
+[005930][Epoch 01/10] Epsilon:1.0000 #Expl.:496/496 #Buy:166 #Sell:155 #Hold:175 #Stocks:817 PV:103,735,543 Loss:0.000000 ET:0.0614
+[005930][Epoch 02/10] Epsilon:1.0000 #Expl.:496/496 #Buy:168 #Sell:163 #Hold:165 #Stocks:394 PV:125,483,061 Loss:0.000000 ET:0.0533
+[005930][Epoch 03/10] Epsilon:1.0000 #Expl.:496/496 #Buy:164 #Sell:152 #Hold:180 #Stocks:1043 PV:113,543,749 Loss:0.000000 ET:0.0522
+[005930][Epoch 04/10] Epsilon:1.0000 #Expl.:496/496 #Buy:165 #Sell:159 #Hold:172 #Stocks:573 PV:107,873,668 Loss:0.000000 ET:0.0528
+[005930][Epoch 05/10] Epsilon:1.0000 #Expl.:496/496 #Buy:166 #Sell:170 #Hold:160 #Stocks:100 PV:97,804,940 Loss:0.000000 ET:0.0526
+[005930][Epoch 06/10] Epsilon:1.0000 #Expl.:496/496 #Buy:142 #Sell:145 #Hold:209 #Stocks:260 PV:113,217,609 Loss:0.000000 ET:0.0523
+[005930][Epoch 07/10] Epsilon:1.0000 #Expl.:496/496 #Buy:159 #Sell:163 #Hold:174 #Stocks:261 PV:121,166,606 Loss:0.000000 ET:0.0528
+[005930][Epoch 08/10] Epsilon:1.0000 #Expl.:496/496 #Buy:159 #Sell:151 #Hold:186 #Stocks:771 PV:115,121,900 Loss:0.000000 ET:0.0528
+[005930][Epoch 09/10] Epsilon:1.0000 #Expl.:496/496 #Buy:159 #Sell:163 #Hold:174 #Stocks:0 PV:105,006,507 Loss:0.000000 ET:0.0524
+[005930][Epoch 10/10] Epsilon:1.0000 #Expl.:496/496 #Buy:159 #Sell:151 #Hold:186 #Stocks:1311 PV:102,661,202 Loss:0.000000 ET:0.0533
+[005930] Elapsed Time:5.0743 Max PV:125,483,061 #Win:9

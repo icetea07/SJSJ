@@ -1,0 +1,1 @@
+{"mode": "train", "ver": "v4.1", "name": "20230714184903", "stock_code": null, "rl_method": "a2c", "net": "dnn", "backend": "pytorch", "start_date": "20200101", "end_date": "20201231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}
