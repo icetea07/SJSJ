@@ -13,22 +13,22 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
-
+ 
+ 
 ### Hyperparameters
 learning_rate = 0.0005
 gamma         = 0.98 # 미래 reward에 대한 반영값
 buffer_limit  = 50000 # 최근 50000개의 transition(t시점의 상태, t시점의 action, t시점의 보상, t+1시점의 상태)을 버퍼에 저장해두고 재사용함. → replay buffer
 batch_size    = 32
-
-
+ 
+ 
 ### DQN 정의 및 학습
 # 딥q러닝 학습 시 익스피리언스 리플레이 기법 사용 (경험을 축적하여 사용)
 class ReplayBuffer():
     def __init__(self):
-        ### TODO 1 : 설정한 size를 자동으로 유지해주는 queue 설정 : https://docs.python.org/ko/3/library/collections.html#collections.deque 참고
+        ### 설정한 size를 자동으로 유지해주는 queue 설정 : https://docs.python.org/ko/3/library/collections.html#collections.deque 참고
         self.buffer = collections.deque(maxlen=buffer_limit)
-        ### 1 END
-        
+     
     # buffer에 transition 넣기
     def put(self, transition):
         self.buffer.append(transition)
@@ -51,89 +51,93 @@ class ReplayBuffer():
      
     def size(self):
         return len(self.buffer)
-    
-
+ 
 # q network 설계
 class Qnet(nn.Module):
     def __init__(self):
-        ### TODO 2 : 3레이어 fully connected nn 설정 layer2의 size는 128로 설정
         super(Qnet, self).__init__()
         self.fc1 = nn.Linear(4, 128) # 카트 위치, 카트 속도, 막대 각도, 막대의 각속도 4개의 input
         self.fc2 = nn.Linear(128, 128)
         self.fc3 = nn.Linear(128, 2) # 왼쪽, 오른쪽 움직임 action이므로 2개 output
-        ### 2 END
  
     def forward(self, x):
-        # TODO 3 : 1,2 layer의 activation은 relu로 설정
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
-        ### 3 END
         return x
      
     # epsilon greedy를 적용해서 action 결정 (epsilon보다 작은 값이 랜덤하게 뽑히면 랜덤하게 action 결정, 그 외에는 max value인 action으로 결정)
     def sample_action(self, obs, epsilon):
         out = self.forward(obs)
         coin = random.random()
-        # TODO 4 : epsilon greedy 설정. 
         if coin < epsilon:
-            #  https://docs.python.org/ko/3/library/random.html 참고
             return random.randint(0,1)
         else :
-            # self.forward의 결과를 활용해 action 0 혹은 1(python int)이 나와야한다.
             return out.argmax().item()
-        ### 4 END
-
-
-# cartpole 환경 로드
-env = gym.make('CartPole-v1')
-    
-# q와 q target모두 qnet으로 정의
-q = Qnet()
-q_target = Qnet()
-    
-# q_target은 q의 파라미터를 주기적으로 복사해서 정답지를 바꿈. (타겟 네트워크 기법 활용)
-q_target.load_state_dict(q.state_dict())
-
-# 익스피리언스 리플레이 기법 활용
-memory = ReplayBuffer()
-
-print_interval = 20
-score = 0.0 
-optimizer = optim.Adam(q.parameters(), lr=learning_rate)
-
-# 에피소드 5000번 수행
-for n_epi in range(5000):
-    # epsilon 값은 처음에는 0.08에서 시작, 점차 에피소드 진행될수록 0.01로 낮추기 위함
-    epsilon = max(0.01, 0.08 - 0.01*(n_epi/200)) #Linear annealing from 8% to 1%
-    # TODO 6 : ENV 초기화
-    s = env.reset()
-    ### 6 END
-    done = False
-
-    # 하나의 에피소드 수행
-    while not done:
-        # TODO 7 : AGENT와 ENV 상호 작용
-        a = q.sample_action(torch.from_numpy(s).float(), epsilon)
-        s_prime, r, done, info = env.step(a) # 스텝 반복
-        
-        done_mask = 0.0 if done else 1.0
-        memory.put((s,a,r/100.0,s_prime, done_mask)) # reward가 너무 커지지 않도록, reward의 합이 10미만이 되도록 reward/100을 해줌
-        s = s_prime
-        ### 7 END
-        score += r
-        if done:
-            break
-        
-    # buffer size가 2000개 넘을때부터 neural net 학습시킴 (에피소드 개수가 너무 적으면 학습X)
-    if memory.size()>2000:
-        train(q, q_target, memory, optimizer)
-
-    if n_epi%print_interval==0 and n_epi!=0:
-        # TODO 8 : statedict사용 하여 q_target을 업데이트
-        q_target.load_state_dict(q.state_dict())
-        ###
-        print("n_episode :{}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(
-                                                        n_epi, score/print_interval, memory.size(), epsilon*100))
-        score = 0.0
-env.close()
+ 
+         
+# 에피소드 한번 끝날때마다 train 호출
+def train(q, q_target, memory, optimizer):
+    for i in range(10):
+        s,a,r,s_prime,done_mask = memory.sample(batch_size)
+ 
+        q_out = q(s) # qnet에 넣었을 때의 현재 상태에 대한 예측값
+        q_a = q_out.gather(1,a)
+        max_q_prime = q_target(s_prime).max(1)[0].unsqueeze(1)
+        target = r + gamma * max_q_prime * done_mask # target : 정답
+        loss = F.smooth_l1_loss(q_a, target) # 위 loss 정의 (smooth_l1_loss : 기본적으로는 l1 loss이나 예측값과 실제값 차이가 매우 작은 부분에 대해서는 l2 loss처럼)
+         
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+ 
+ 
+def main():
+    # cartpole 환경 로드
+    env = gym.make('CartPole-v1')
+     
+    # q와 q target모두 qnet으로 정의
+    q = Qnet()
+    q_target = Qnet()
+     
+    # q_target은 q의 파라미터를 주기적으로 복사해서 정답지를 바꿈. (타겟 네트워크 기법 활용)
+    q_target.load_state_dict(q.state_dict())
+    # 익스피리언스 리플레이 기법 활용
+    memory = ReplayBuffer()
+ 
+    print_interval = 20
+    score = 0.0 
+    optimizer = optim.Adam(q.parameters(), lr=learning_rate)
+ 
+    # 에피소드 10000번 수행
+    for n_epi in range(10000):
+        # epsilon 값은 처음에는 0.08에서 시작, 점차 에피소드 진행될수록 0.01로 낮추기 위함
+        epsilon = max(0.01, 0.08 - 0.01*(n_epi/200)) #Linear annealing from 8% to 1%
+        s, info = env.reset()
+        done = False
+ 
+        # 하나의 에피소드 수행
+        while not done:
+            a = q.sample_action(torch.from_numpy(s).float(), epsilon)
+            s_prime, r, done, _, info = env.step(a) # 스텝 반복
+            done_mask = 0.0 if done else 1.0
+            memory.put((s,a,r/100.0,s_prime, done_mask)) # reward가 너무 커지지 않도록, reward의 합이 10미만이 되도록 reward/100을 해줌
+            s = s_prime
+ 
+            score += r
+            if done or score > 200000:  # 성능이 좋으면 계속 안끝나기 때문에 추가
+                break
+         
+        # buffer size가 2000개 넘을때부터 neural net 학습시킴 (에피소드 개수가 너무 적으면 학습X)
+        if memory.size()>2000:
+            train(q, q_target, memory, optimizer)
+ 
+        if n_epi%print_interval==0 and n_epi!=0:
+            q_target.load_state_dict(q.state_dict())
+            print("n_episode :{}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(
+                                                            n_epi, score/print_interval, memory.size(), epsilon*100))
+            score = 0.0
+    env.close()
+ 
+if __name__ == '__main__':
+    main()
