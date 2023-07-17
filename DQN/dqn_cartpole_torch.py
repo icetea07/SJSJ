@@ -95,6 +95,7 @@ def train(q, q_target, memory, optimizer):
 def main():
     # cartpole 환경 로드
     env = gym.make('CartPole-v1')
+    # env = gym.make('CartPole-v1', render_mode="human")
      
     # q와 q target모두 qnet으로 정의
     q = Qnet()
@@ -125,7 +126,7 @@ def main():
             s = s_prime
  
             score += r
-            if done or score > 200000:  # 성능이 좋으면 계속 안끝나기 때문에 추가
+            if done or score > 2000000:  # 성능이 좋으면 계속 안끝나기 때문에 추가
                 break
          
         # buffer size가 2000개 넘을때부터 neural net 학습시킴 (에피소드 개수가 너무 적으면 학습X)
