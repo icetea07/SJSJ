@@ -1,0 +1,4 @@
+{"mode": "test", "ver": "v3", "name": "20231202184827", "stock_code": ["010120"], "rl_method": "ppo", "net": "lstm", "backend": "pytorch", "start_date": "20210101", "end_date": "20231231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}
+[010120] RL:ppo NET:lstm LR:0.001 DF:0.7 
+[010120][Epoch 1/1] Epsilon:0.0000 #Expl.:0/716 #Buy:183 #Sell:182 #Hold:351 #Stocks:703 PV:117,606,714 Loss:0.000000 ET:0.4368
+[010120] Elapsed Time:1.6965 Max PV:117,606,714 #Win:1

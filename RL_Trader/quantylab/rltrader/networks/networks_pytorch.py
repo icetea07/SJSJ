@@ -8,8 +8,9 @@ import torch
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # 테스트 결과 mps가 cpu보다 더 느림 왜 인지 모르겠슴. 그래서 주석으로 막음
 # torch.device('mps') 이렇게 세팅 안하고 device = 'mps' 해도 되는 것 확인
-device = "mps" if getattr(torch,'has_mps',False) \
+device = "mps" if torch.backends.mps.is_built() \
     else "gpu" if torch.cuda.is_available() else "cpu"
+device = "cpu"
 
 class Network:
     lock = threading.Lock()
