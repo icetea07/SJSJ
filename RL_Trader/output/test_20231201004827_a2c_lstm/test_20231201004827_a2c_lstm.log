@@ -1,0 +1,4 @@
+{"mode": "test", "ver": "v3", "name": "20231201004827", "stock_code": ["010120"], "rl_method": "a2c", "net": "lstm", "backend": "pytorch", "start_date": "20210101", "end_date": "20231231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}
+[010120] RL:a2c NET:lstm LR:0.001 DF:0.7 
+[010120][Epoch 1/1] Epsilon:0.0000 #Expl.:0/716 #Buy:74 #Sell:80 #Hold:562 #Stocks:0 PV:153,417,747 Loss:0.000000 ET:0.4487
+[010120] Elapsed Time:1.6882 Max PV:153,417,747 #Win:1

@@ -1,0 +1,1 @@
+{"mode": "train", "ver": "v3", "name": "20231202184827", "stock_code": ["010120"], "rl_method": "ppo", "net": "lstm", "backend": "pytorch", "start_date": "20180101", "end_date": "20201231", "lr": 0.001, "discount_factor": 0.7, "balance": 100000000}

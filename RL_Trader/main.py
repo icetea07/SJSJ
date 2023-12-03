@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument('--ver', choices=['v1', 'v2', 'v3', 'v4', 'v4.1', 'v4.2'], default='v4.1')
     parser.add_argument('--name', default=utils.get_time_str())
     parser.add_argument('--stock_code', nargs='+')
-    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='a2c')
+    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey', 'ppo'], default='a2c')
     parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='dnn')
     parser.add_argument('--backend', choices=['pytorch', 'tensorflow', 'plaidml'], default='pytorch')
     parser.add_argument('--start_date', default='20200101')
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     
     # Backend 설정, 로그 설정을 먼저하고 RLTrader 모듈들을 이후에 임포트해야 함
     from quantylab.rltrader.learners import ReinforcementLearner, DQNLearner, \
-        PolicyGradientLearner, ActorCriticLearner, A2CLearner, A3CLearner
+        PolicyGradientLearner, ActorCriticLearner, A2CLearner, A3CLearner, PPOLearner
 
     common_params = {}
     list_stock_code = []
@@ -122,6 +122,10 @@ if __name__ == '__main__':
                     'policy_network_path': policy_network_path})
             elif args.rl_method == 'a2c':
                 learner = A2CLearner(**{**common_params, 
+                    'value_network_path': value_network_path, 
+                    'policy_network_path': policy_network_path})
+            elif args.rl_method == 'ppo':
+                learner = PPOLearner(**{**common_params, 
                     'value_network_path': value_network_path, 
                     'policy_network_path': policy_network_path})
             elif args.rl_method == 'monkey':
